@@ -10,6 +10,7 @@ import com.scaler.fakestoreapi.models.Product;
 import com.scaler.fakestoreapi.service.ProductServie;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,15 +44,23 @@ public class ProductController {
         return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/")
-    public Product[] getAllProducts() {
+//    @GetMapping("/")
+//    public Product[] getAllProducts() {
+//
+//        return productServie.getAllProducts();
+//    }
 
-        return productServie.getAllProducts();
+
+// with pagenation for getting all products
+    @GetMapping("/")
+
+    public Page<Product> getAllProducts( @RequestParam("PageNumber") int pageNumber,@RequestParam("PageSize") int pageSize) {
+
+                 return productServie.getAllProducts(pageNumber,pageSize);
     }
 
     @PostMapping("/")
     public Product createProduct(@RequestBody Product product) {
-
 
         return productServie.createProduct(product);
     }

@@ -6,6 +6,9 @@ import com.scaler.fakestoreapi.models.Product;
 import com.scaler.fakestoreapi.repo.CategoryRepository;
 import com.scaler.fakestoreapi.repo.ProductRepository;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -36,8 +39,15 @@ public class SelfProductService implements ProductServie{
     public Product[] getAllProducts() {
         List<Product> productsList = productRepository.findAll();
         Product [] products = productsList.toArray(new Product[productsList.size()]) ;
-
         return products;
+    }
+
+    // with pagenation
+    @Override
+    public  Page<Product> getAllProducts(int pageSize,int pageNumber) {
+        Page<Product> productsList = productRepository.findAll(PageRequest.of(pageNumber,pageSize,
+                   Sort.by("price").descending()));
+              return productsList;
     }
 
     @Override

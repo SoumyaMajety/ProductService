@@ -4,6 +4,7 @@ import com.scaler.fakestoreapi.dtos.FakeStoreRequestDto;
 import com.scaler.fakestoreapi.dtos.FakeStoreResponseDto;
 import com.scaler.fakestoreapi.models.Category;
 import com.scaler.fakestoreapi.models.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -95,5 +96,11 @@ public class FakestoreProductService implements ProductServie {
 
         restTemplate.delete("https://fakestoreapi.com/products/" + id);
 
+    }
+
+    // for Pagenation
+
+    public Page<Product> getAllProducts(int pageSize, int pageNumber){
+        return null;
     }
 }
