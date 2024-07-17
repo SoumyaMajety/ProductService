@@ -5,26 +5,38 @@ import com.scaler.fakestoreapi.dtos.FakeStoreResponseDto;
 import com.scaler.fakestoreapi.models.Category;
 import com.scaler.fakestoreapi.models.Product;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-@Service
+//@Primary
+@Service("FakeStoreProductService")
 public class FakestoreProductService implements ProductServie {
 
     private RestTemplate restTemplate;
+    private RedisTemplate<String,Object> redisTemplate;
 
-    private FakestoreProductService(RestTemplate restTemplate) {
+    private FakestoreProductService(RestTemplate restTemplate,RedisTemplate<String,Object> redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate=redisTemplate;
     }
 
     @Override
     public Product getProductById(int id) {
+        // checking whters the requested product is presented in cache
+       Product p = (Product)redisTemplate.opsForHash().get("PRODUCTS","PRODUCT"+id);
+       if(p!=null){
+           // Cache hit
+           return p;
+       }
+       // else do this (Cache miss)
         FakeStoreResponseDto responseDto = restTemplate
                 .getForObject("https://fakestoreapi.com/products/" + id, FakeStoreResponseDto.class);
         if (responseDto == null)
             return null;
+        Product product=convertFakestoreResponseDtoTProduct(responseDto);
+        redisTemplate.opsForHash().put("PRODUCTS","PRODUCT"+id,product);
 
-        return convertFakestoreResponseDtoTProduct(responseDto);
+        return product;
     }
 
     public Product[] getAllProducts() {

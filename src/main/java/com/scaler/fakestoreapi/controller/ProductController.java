@@ -23,7 +23,8 @@ public class ProductController {
     ProductServie productServie;
     private AuthCommon authCommon;
 
-    public ProductController(@Qualifier("SelfProductService") ProductServie productServie,
+    //@Qualifier("FakeStoreProductService") add this behind product service interface
+    public ProductController( @Qualifier("FakeStoreProductService") ProductServie productServie,
                              AuthCommon authCommon) {
         this.productServie = productServie;
         this.authCommon=authCommon;
@@ -31,17 +32,17 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") int id,@RequestHeader("token") String token ) throws InvalidTokenException,ProductNotFound {
-       UserDto userDto = authCommon.validateUser(token);
-
-       if(userDto !=null){
-           for (Roles r : userDto.getRoles()){
-                  if(r.getRole() == "ADMIN"){
+//       UserDto userDto = authCommon.validateUser(token);
+//
+//       if(userDto !=null){
+//           for (Roles r : userDto.getRoles()){
+//                  if(r.getRole() == "ADMIN"){
                       Product p = productServie.getProductById(id);
                       return new ResponseEntity<>(p, HttpStatus.OK);
-                  }
-           }
-       }
-        return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+//                  }
+//           }
+//       }
+//        return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
     }
 
 //    @GetMapping("/")

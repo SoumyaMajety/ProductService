@@ -6,11 +6,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Data
 @Getter
 @Setter
 @Entity
-public class Category extends BaseModel {
+public class Category extends BaseModel  {
 
     private String title;
 
